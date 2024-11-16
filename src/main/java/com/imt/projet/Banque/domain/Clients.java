@@ -1,4 +1,5 @@
 package com.imt.projet.Banque.domain;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import lombok.ToString;
 public class Clients {
 
     @Getter
-    private UUID id;
+    private UUID ClientId;
     
     @Getter @Setter
     private String nom;
@@ -26,11 +27,12 @@ public class Clients {
     @Getter
     private List<Contrat> contrats;
 
-    Clients(String nom, String prenom, String genre) {
-        this.id = UUID.randomUUID();
+    public Clients(String nom, String prenom, String genre) {
+        this.ClientId = UUID.randomUUID();
         this.nom = nom;
         this.prenom = prenom;
         this.genre = genre;
+        this.contrats = new ArrayList<>();
     }
 
     public void addContrat(Contrat contrat) {

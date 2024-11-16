@@ -5,10 +5,11 @@ import java.util.UUID;
 import com.imt.projet.Banque.domain.Clients;
 
 public interface Contrat {
-    UUID getId();
+    UUID getContratId();
     String getType();
     Date getDate();
     Clients getClient();
-    Double getInteret();
     Double getBalance();
+    void updateBalance(Double montant);
+    String toString();
 }
