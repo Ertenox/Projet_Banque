@@ -1,30 +1,22 @@
-package com.imt.projet.Banque.domain;
+package com.imt.projet.Banque.domain.model.Client;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import com.imt.projet.Banque.domain.Contrats.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
+@AllArgsConstructor
+@ToString @Getter @Setter
 public class Clients {
-
-    @Getter
     private UUID ClientId;
-    
-    @Getter @Setter
     private String nom;
-
-    @Getter @Setter
     private String prenom;
-
-    @Getter @Setter
     private String genre ;
-
-    @Getter
     private List<Contrat> contrats;
 
     public Clients(String nom, String prenom, String genre) {
@@ -33,6 +25,7 @@ public class Clients {
         this.prenom = prenom;
         this.genre = genre;
         this.contrats = new ArrayList<>();
+        System.out.println(this.ClientId);
     }
 
     public void addContrat(Contrat contrat) {

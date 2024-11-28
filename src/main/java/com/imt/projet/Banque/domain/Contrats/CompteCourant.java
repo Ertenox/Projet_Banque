@@ -1,30 +1,16 @@
 package com.imt.projet.Banque.domain.Contrats;
-import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Date;
 import java.util.UUID;
 
-import com.imt.projet.Banque.domain.Clients;
 
-@Getter @ToString
-public class CompteCourant implements Contrat {
-    private UUID contratId;
-    private String type;
-    private Date date;
-    private Clients client;
-    private Double balance;
-
-    public CompteCourant(Clients client, Double balance) {
-        this.contratId = UUID.randomUUID();
-        this.type = "compte courant";
-        this.date = new Date();
-        this.client = client;
-        this.balance = balance;
+public class CompteCourant extends Contrat {
+    public CompteCourant(UUID clientId, Double balance) {
+        super(clientId, balance, "compte courant");
     }
 
-    public void updateBalance(Double montant) {
-        this.balance += montant;
+    public CompteCourant(UUID contratId, UUID clientId, Double balance, Date date) {
+        super(contratId, "compte courant", date, clientId, balance);
     }
-
+    
 }

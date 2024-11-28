@@ -1,4 +1,4 @@
-package com.imt.projet.Banque.model.Contrat;
+package com.imt.projet.Banque.domain.model.Contrat;
 
 import lombok.Getter;
 import lombok.Setter;

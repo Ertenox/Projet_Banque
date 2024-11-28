@@ -1,37 +1,31 @@
 package com.imt.projet.Banque.domain.Contrats;
-import lombok.Getter;
-import lombok.ToString;
 
 import java.util.Date;
 import java.util.UUID;
 
-import com.imt.projet.Banque.domain.Clients;
 
-@Getter @ToString
-public class CompteEpargne implements Contrat {
-    private Clients client;
-    private UUID contratId;
-    private String type;
-    private Date date;
+import lombok.Getter;
+
+
+public class CompteEpargne extends Contrat {
     private static final Double INTERET = 0.03;
-    private boolean status;
-    private Double balance;
 
-    public CompteEpargne(Clients client, Double balance) {
-        this.contratId = UUID.randomUUID();
-        this.type = "compte épargne";
-        this.date = new Date();
-        this.client = client;
-        this.status = true;
-        this.balance = balance;
+    @Getter
+    private boolean lock;
+
+    public CompteEpargne(UUID clientId, Double balance) {
+        super(clientId, balance, "compte épargne");
+        this.lock = true;
     }
+
+    public CompteEpargne(UUID contratId, UUID clientId, Double balance, Date date, boolean lock) {
+        super(contratId, "compte courant", date, clientId, balance);
+        this.lock = lock;
+    }
+
 
     public void unLock() {
-        this.status = false;
-    }
-
-    public void updateBalance(Double montant) {
-        this.balance += montant;
+        this.lock = false;
     }
 
     public Double getInteret() {

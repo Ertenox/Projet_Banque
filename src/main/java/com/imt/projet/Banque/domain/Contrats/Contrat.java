@@ -1,15 +1,30 @@
 package com.imt.projet.Banque.domain.Contrats;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.util.Date;
 import java.util.UUID;
 
-import com.imt.projet.Banque.domain.Clients;
 
-public interface Contrat {
-    UUID getContratId();
-    String getType();
-    Date getDate();
-    Clients getClient();
-    Double getBalance();
-    void updateBalance(Double montant);
-    String toString();
+@Getter @ToString @AllArgsConstructor
+public abstract class Contrat {
+    private UUID contratId;
+    private String type;
+    private Date date;
+    private UUID clientId;
+    private Double balance;
+
+    public Contrat(UUID clientId, Double balance, String type) {
+        this.contratId = UUID.randomUUID();
+        this.type = type;
+        this.date = new Date();
+        this.clientId = clientId;
+        this.balance = balance;
+    }
+
+    public void updateBalance(Double montant) {
+        this.balance += montant;
+    }
 }

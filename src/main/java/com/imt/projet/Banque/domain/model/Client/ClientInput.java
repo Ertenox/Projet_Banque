@@ -1,4 +1,4 @@
-package com.imt.projet.Banque.model.Client;
+package com.imt.projet.Banque.domain.model.Client;
 
 import lombok.*;
 import jakarta.validation.constraints.*;

@@ -1,12 +1,12 @@
-package com.imt.projet.Banque.model.Contrat.Type;
-
-import com.imt.projet.Banque.model.Contrat.ContratOutput;
+package com.imt.projet.Banque.domain.model.Contrat.Type;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.UUID;
+
+import com.imt.projet.Banque.domain.model.Contrat.ContratOutput;
 
 @Getter
 @Setter

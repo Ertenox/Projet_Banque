@@ -1,4 +1,4 @@
-package com.imt.projet.Banque.model.Client;
+package com.imt.projet.Banque.domain.model.Client;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.ToString;
 import java.util.List;
 import java.util.UUID;
 
-import com.imt.projet.Banque.model.Contrat.ContratEssential;
+import com.imt.projet.Banque.domain.model.Contrat.ContratEssential;
 
 @Getter
 @Setter

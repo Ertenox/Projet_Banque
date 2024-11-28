@@ -1,53 +1,38 @@
 package com.imt.projet.Banque.application;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.imt.projet.Banque.domain.Clients;
 import com.imt.projet.Banque.domain.Contrats.*;
-import com.imt.projet.Banque.model.*;
-import com.imt.projet.Banque.model.Client.ClientOutput;
-import com.imt.projet.Banque.model.Contrat.ContratEssential;
-import com.imt.projet.Banque.model.Contrat.ContratOutput;
-import com.imt.projet.Banque.model.Contrat.Type.CompteCourantOutput;
-import com.imt.projet.Banque.model.Contrat.Type.CompteEpargneOutput;
-import com.imt.projet.Banque.model.Contrat.*;
-import com.imt.projet.Banque.model.Contrat.Type.*;
+import com.imt.projet.Banque.domain.model.Client.ClientOutput;
+import com.imt.projet.Banque.domain.model.Client.Clients;
+import com.imt.projet.Banque.domain.model.Contrat.ContratEssential;
+import com.imt.projet.Banque.domain.model.Contrat.ContratOutput;
+import com.imt.projet.Banque.domain.model.Contrat.Type.CompteCourantOutput;
+import com.imt.projet.Banque.domain.model.Contrat.Type.CompteEpargneOutput;
 
-import org.springframework.http.HttpStatus;
+import com.imt.projet.Banque.interfaces.database.ClientRepository;
+import com.imt.projet.Banque.interfaces.database.ContratRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @Service
 public class Metier {
 
-    private Map<UUID, Clients> clients = new HashMap<>();
-    private Map<UUID, Contrat> contrats = new HashMap<>();
-
-    public boolean clientExists(UUID clientId) {
-        return clients.containsKey(clientId);
-    }
-
-    public boolean clientExists(String nom, String prenom, String genre) {
-        for (Clients client : clients.values()) {
-            if (client.getNom().equals(nom) && client.getPrenom().equals(prenom) && client.getGenre().equals(genre)) {
-            return true;
-            }
-        }
-        return false;
-    }
+    @Autowired
+    private ClientRepository clientRepository; 
+    @Autowired
+    private ContratRepository contratRepository;
 
     public ClientOutput getClientByUUIDOutput(UUID clientId) {
-        Clients client = clients.get(clientId);
+        Clients client = clientRepository.getClientByUUID(clientId);
         if (client == null) {
             return null; 
         }
-    
         ClientOutput clientOutput = new ClientOutput();
         clientOutput.setClientId(client.getClientId());
         clientOutput.setNom(client.getNom());
@@ -69,13 +54,14 @@ public class Metier {
     }
 
     public Clients getClientByUUID(UUID clientId) {
-        return clients.get(clientId);
+        return clientRepository.getClientByUUID(clientId);
     }
     
-    public List<ClientOutput> getClients() {
+   public List<ClientOutput> getClients() {
         List<ClientOutput> clientOutputs = new ArrayList<>();
-        for (UUID clientId : clients.keySet()) {
-            ClientOutput clientOutput = getClientByUUIDOutput(clientId);
+
+        for (Clients client : clientRepository.getAllClients()) {
+            ClientOutput clientOutput = getClientByUUIDOutput(client.getClientId());
             if (clientOutput != null) {
                 clientOutputs.add(clientOutput);
             }
@@ -84,23 +70,20 @@ public class Metier {
     }
     
     public void createClient(String nom, String prenom, String genre) throws Exception {
-        genre = genre.isEmpty() ? "Inconnu" : genre;
+        genre = ( genre != null && genre.isEmpty()) ? "Inconnu" : genre;
         Clients client = new Clients(nom, prenom, genre);
-        clients.put(client.getClientId(), client);
+        clientRepository.saveClient(client);    
     }
 
     public void deleteClient(UUID clientId) throws Exception {
-        if (!clientExists(clientId)) {
+        if ((clientId == null) || !clientRepository.clientExists(clientId)) {
             throw new Exception("Client does not exist");
         }
-        if ((getClientByUUID(clientId)).getContrats() != null) {
-            throw new Exception("Client has contracts");
-        }
-        clients.remove(clientId);
+        clientRepository.deleteClient(clientId);
     }
 
     public void patchClient(UUID clientId, Map<String, String> patchData) throws Exception {
-        if (!clientExists(clientId)) {
+        if (!clientRepository.clientExists(clientId)) {
             throw new Exception("Client does not exist");
         }
         Clients client = getClientByUUID(clientId);
@@ -113,22 +96,15 @@ public class Metier {
         if (patchData.containsKey("genre")) {
             client.setGenre(patchData.get("genre"));
         }
+        clientRepository.saveClient(client);
     }
     
-
-    public boolean contratExists(UUID contratId) {
-        if (contrats.containsKey(contratId)) {
-            return true;
-        }
-        return false;
-    }
-
     public Contrat getContratByUUID(UUID contratId) {
-        return contrats.get(contratId);
+        return contratRepository.getContratByUUID(contratId);
     }
 
     public ContratOutput getContratByUUIDOutput(UUID contratId) {
-        Contrat contrat = contrats.get(contratId);
+        Contrat contrat = getContratByUUID(contratId);
         if (contrat == null) {
             return null;
         }
@@ -140,7 +116,7 @@ public class Metier {
                 compteCourant.getType(),
                 compteCourant.getDate(),
                 compteCourant.getBalance(),
-                compteCourant.getClient().getClientId()
+                compteCourant.getClientId()
             );
         } else if (contrat instanceof CompteEpargne) {
             CompteEpargne compteEpargne = (CompteEpargne) contrat;
@@ -150,8 +126,8 @@ public class Metier {
                 compteEpargne.getDate(),
                 compteEpargne.getInteret(),
                 compteEpargne.getBalance(),
-                compteEpargne.getClient().getClientId(),
-                compteEpargne.isStatus()
+                compteEpargne.getClientId(),
+                compteEpargne.isLock()
             );
         }
     
@@ -160,7 +136,7 @@ public class Metier {
     
     public List<ContratOutput> getAllContrats() {
         List<ContratOutput> contratsOutput = new ArrayList<>();
-        for (Contrat contrat : contrats.values()) {
+        for (Contrat contrat : contratRepository.getAllContrats()) {
             ContratOutput contratOutput = getContratByUUIDOutput(contrat.getContratId());
             if (contratOutput != null) {
                 contratsOutput.add(contratOutput);
@@ -169,24 +145,26 @@ public class Metier {
         return contratsOutput;
     }
 
-    public Contrat createContrat(UUID clientId, String type, Double balance) throws Exception {
-        if (!clientExists(clientId)) {
+    public void createContrat(UUID clientId, String type, Double balance) throws Exception {
+        if (!contratRepository.contratExists(clientId)) {
             throw new Exception("Client does not exist");
         }
-        Contrat contrat = ContratFactory.creerContrat(type, getClientByUUID(clientId), balance);
-        contrats.put(contrat.getContratId(), contrat);
-        return contrat;
+        Clients client = getClientByUUID(clientId);
+        Contrat contrat = ContratFactory.creerContrat(type, clientId, balance);
+        contratRepository.saveContrat(contrat);
+        client.addContrat(contrat);
+        clientRepository.saveClient(client);
     }
 
     public void deleteContrat(UUID contratId) throws Exception {
-        if (!contratExists(contratId)) {
+        if (!contratRepository.contratExists(contratId)) {
             throw new Exception("Contrat does not exist");
         }
-        contrats.remove(contratId);
+        contratRepository.deleteContrat(contratId);
     }
 
     public void patchContrat(UUID contratId, Map<String, String> patchData) throws Exception {
-        if (!contratExists(contratId)) {
+        if (!contratRepository.contratExists(contratId)) {
             throw new Exception("Contrat does not exist");
         }
         Contrat contrat = getContratByUUID(contratId);

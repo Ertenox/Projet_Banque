@@ -2,9 +2,8 @@ package com.imt.projet.Banque.interfaces.rest;
 
 
 import com.imt.projet.Banque.application.Metier;
-import com.imt.projet.Banque.domain.Clients;
-import com.imt.projet.Banque.model.Client.ClientInput;
-import com.imt.projet.Banque.model.Client.ClientOutput;
+import com.imt.projet.Banque.domain.model.Client.ClientInput;
+import com.imt.projet.Banque.domain.model.Client.ClientOutput;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;

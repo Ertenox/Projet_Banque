@@ -1,14 +1,14 @@
 package com.imt.projet.Banque.domain.Contrats;
-import com.imt.projet.Banque.domain.Clients;
+import java.util.UUID;
 
 public class ContratFactory {
 
-    public static Contrat creerContrat(String type, Clients client, Double balance) {
+    public static Contrat creerContrat(String type, UUID clientId, Double balance) {
         switch (type.toLowerCase()) {
             case "epargne":
-                return new CompteEpargne(client, balance);
+                return new CompteEpargne(clientId, balance);
             default :
-                return new CompteCourant(client, balance);
+                return new CompteCourant(clientId, balance);
         }
 
     }
