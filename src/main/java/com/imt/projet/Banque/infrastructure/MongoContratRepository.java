@@ -28,7 +28,6 @@ public class MongoContratRepository implements ContratRepository {
 
     @Override
     public Contrat getContratByUUID(UUID contratId) {
-        System.out.println("Entering getContratByUUID");
         return contratAdapter.toDomain(mongoContratSpringRepository.findById(contratId).orElse(null));
     }
 

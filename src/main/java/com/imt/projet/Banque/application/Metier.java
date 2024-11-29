@@ -28,11 +28,11 @@ public class Metier {
     @Autowired
     private ContratRepository contratRepository;
 
-    public ClientOutput getClientByUUIDOutput(UUID clientId) {
-        Clients client = clientRepository.getClientByUUID(clientId);
-        if (client == null) {
-            return null; 
+    public ClientOutput getClientByUUIDOutput(UUID clientId) throws Exception {
+        if (!clientRepository.clientExists(clientId)) {
+            throw new Exception("CLient does not exist");
         }
+        Clients client = clientRepository.getClientByUUID(clientId);
         ClientOutput clientOutput = new ClientOutput();
         clientOutput.setClientId(client.getClientId());
         clientOutput.setNom(client.getNom());
@@ -53,11 +53,14 @@ public class Metier {
         return clientOutput;
     }
 
-    public Clients getClientByUUID(UUID clientId) {
+    public Clients getClientByUUID(UUID clientId) throws Exception {
+        if (!clientRepository.clientExists(clientId)) {
+            throw new Exception("CLient does not exist");
+        }
         return clientRepository.getClientByUUID(clientId);
     }
     
-   public List<ClientOutput> getClients() {
+   public List<ClientOutput> getClients() throws Exception {
         List<ClientOutput> clientOutputs = new ArrayList<>();
 
         for (Clients client : clientRepository.getAllClients()) {
@@ -70,7 +73,10 @@ public class Metier {
     }
     
     public void createClient(String nom, String prenom, String genre) throws Exception {
-        genre = ( genre != null && genre.isEmpty()) ? "Inconnu" : genre;
+        if (nom == null || prenom == null || nom.isEmpty() || prenom.isEmpty())
+            throw new Exception("Nom et prénom sont obligatoires");
+        System.out.println("genre: " + genre);
+        genre = ( genre == null || genre.isEmpty()) ? "Inconnu" : genre;
         Clients client = new Clients(nom, prenom, genre);
         clientRepository.saveClient(client);    
     }
@@ -99,15 +105,18 @@ public class Metier {
         clientRepository.saveClient(client);
     }
     
-    public Contrat getContratByUUID(UUID contratId) {
+    public Contrat getContratByUUID(UUID contratId) throws Exception {
+        if (!contratRepository.contratExists(contratId)) {
+            throw new Exception("Contrat does not exist");
+        }
         return contratRepository.getContratByUUID(contratId);
     }
 
-    public ContratOutput getContratByUUIDOutput(UUID contratId) {
-        Contrat contrat = getContratByUUID(contratId);
-        if (contrat == null) {
-            return null;
+    public ContratOutput getContratByUUIDOutput(UUID contratId) throws Exception {
+        if (!contratRepository.contratExists(contratId)) {
+            throw new Exception("Contrat does not exist");
         }
+        Contrat contrat = getContratByUUID(contratId);
     
         if (contrat instanceof CompteCourant) {
             CompteCourant compteCourant = (CompteCourant) contrat;
@@ -129,12 +138,12 @@ public class Metier {
                 compteEpargne.getClientId(),
                 compteEpargne.isLock()
             );
+        } else {
+            throw new Exception("Contrat type not supported");
         }
-    
-        return null;
     }
     
-    public List<ContratOutput> getAllContrats() {
+    public List<ContratOutput> getAllContrats() throws Exception {
         List<ContratOutput> contratsOutput = new ArrayList<>();
         for (Contrat contrat : contratRepository.getAllContrats()) {
             ContratOutput contratOutput = getContratByUUIDOutput(contrat.getContratId());
@@ -146,6 +155,7 @@ public class Metier {
     }
 
     public void createContrat(UUID clientId, String type, Double balance) throws Exception {
+        System.out.println("clientId: " + clientId);
         if (!contratRepository.contratExists(clientId)) {
             throw new Exception("Client does not exist");
         }
@@ -171,6 +181,7 @@ public class Metier {
         if (patchData.containsKey("balance")) {
             contrat.updateBalance(Double.parseDouble(patchData.get("balance")));
         }
+        contratRepository.saveContrat(contrat);
     }
 
 

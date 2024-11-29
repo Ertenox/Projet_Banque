@@ -26,26 +26,21 @@ public class ClientController {
         this.metier = metier;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "/create", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> createClient(@Valid @RequestBody ClientInput clientInput) throws Exception {
-        if (clientInput.getNom().isEmpty() || clientInput.getPrenom().isEmpty()) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Le nom et le prénom ne doivent pas être vides.");
-        }
+    public void createClient(@Valid @RequestBody ClientInput clientInput) throws Exception {
         metier.createClient(clientInput.getNom(), clientInput.getPrenom(), clientInput.getGenre());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping(path = "/byId", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public ClientOutput getClientById(@RequestParam String clientId) {
+    public ClientOutput getClientById(@RequestParam String clientId) throws Exception {
         return metier.getClientByUUIDOutput(UUID.fromString(clientId));
     }
 
     @GetMapping(path = "/all", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientOutput> getAllClients() {
+    public List<ClientOutput> getAllClients() throws Exception {
         List<ClientOutput> clientOutputs = metier.getClients(); 
         return clientOutputs; 
     }
