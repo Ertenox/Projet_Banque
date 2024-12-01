@@ -5,7 +5,9 @@ import com.imt.projet.Banque.domain.Contrats.CompteEpargne;
 import com.imt.projet.Banque.domain.Contrats.Contrat;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import com.imt.projet.Banque.infrastructure.model.ContratMongo;
@@ -13,7 +15,6 @@ import com.imt.projet.Banque.infrastructure.model.ContratMongo;
 
 @Component
 public class ContratMongoAdapter {
-
     public Contrat toDomain(ContratMongo contratMongo) {
         if (contratMongo == null) {
             return null;
@@ -25,7 +26,7 @@ public class ContratMongoAdapter {
                     contratMongo.getBalance(),
                     contratMongo.getDate()
                 );
-        } else if ("compte épargne".equals(contratMongo.getType())) {
+        } else if ("compte epargne".equals(contratMongo.getType())) {
             return new CompteEpargne(
                     contratMongo.getContratId(),
                     contratMongo.getClientId(),

@@ -75,7 +75,6 @@ public class Metier {
     public void createClient(String nom, String prenom, String genre) throws Exception {
         if (nom == null || prenom == null || nom.isEmpty() || prenom.isEmpty())
             throw new Exception("Nom et prénom sont obligatoires");
-        System.out.println("genre: " + genre);
         genre = ( genre == null || genre.isEmpty()) ? "Inconnu" : genre;
         Clients client = new Clients(nom, prenom, genre);
         clientRepository.saveClient(client);    
@@ -85,7 +84,12 @@ public class Metier {
         if ((clientId == null) || !clientRepository.clientExists(clientId)) {
             throw new Exception("Client does not exist");
         }
+        Clients client = clientRepository.getClientByUUID(clientId);
+        for (Contrat contrat : client.getContrats()){
+            contratRepository.deleteContrat(contrat.getContratId());
+        }
         clientRepository.deleteClient(clientId);
+
     }
 
     public void patchClient(UUID clientId, Map<String, String> patchData) throws Exception {
@@ -155,8 +159,7 @@ public class Metier {
     }
 
     public void createContrat(UUID clientId, String type, Double balance) throws Exception {
-        System.out.println("clientId: " + clientId);
-        if (!contratRepository.contratExists(clientId)) {
+        if (!clientRepository.clientExists(clientId)) {
             throw new Exception("Client does not exist");
         }
         Clients client = getClientByUUID(clientId);

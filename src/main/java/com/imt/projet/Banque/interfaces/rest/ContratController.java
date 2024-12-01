@@ -8,7 +8,6 @@ import com.imt.projet.Banque.interfaces.rest.exceptions.ErrorManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
 

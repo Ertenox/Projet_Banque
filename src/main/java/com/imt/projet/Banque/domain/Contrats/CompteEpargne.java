@@ -14,12 +14,12 @@ public class CompteEpargne extends Contrat {
     private boolean lock;
 
     public CompteEpargne(UUID clientId, Double balance) {
-        super(clientId, balance, "compte épargne");
+        super(clientId, balance, "compte epargne");
         this.lock = true;
     }
 
     public CompteEpargne(UUID contratId, UUID clientId, Double balance, Date date, boolean lock) {
-        super(contratId, "compte courant", date, clientId, balance);
+        super(contratId, "compte epargne", date, clientId, balance);
         this.lock = lock;
     }
 
@@ -31,4 +31,9 @@ public class CompteEpargne extends Contrat {
     public Double getInteret() {
         return INTERET;
     }
+
+    public void applyInterset() {
+        this.setBalance(this.getBalance()*(1+INTERET));
+    }
 }
+
