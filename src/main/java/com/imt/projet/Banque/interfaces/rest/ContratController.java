@@ -3,7 +3,6 @@ package com.imt.projet.Banque.interfaces.rest;
 import com.imt.projet.Banque.application.Metier;
 import com.imt.projet.Banque.domain.model.Contrat.ContratInput;
 import com.imt.projet.Banque.domain.model.Contrat.ContratOutput;
-import com.imt.projet.Banque.interfaces.rest.exceptions.ErrorManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -23,7 +22,6 @@ import java.util.UUID;
 public class ContratController {
 
     private final Metier metier;
-    ErrorManager ErrManager = new ErrorManager();
 
     @Autowired
     public ContratController(Metier metier) {

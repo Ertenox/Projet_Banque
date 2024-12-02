@@ -25,7 +25,6 @@ public class Clients {
         this.prenom = prenom;
         this.genre = genre;
         this.contrats = new ArrayList<>();
-        System.out.println(this.ClientId);
     }
 
     public void addContrat(Contrat contrat) {
