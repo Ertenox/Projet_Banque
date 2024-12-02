@@ -10,7 +10,7 @@ public class ClientsMongoAdapter {
     ContratMongoAdapter contratAdapter = new ContratMongoAdapter();
 
     public Clients toDomain(ClientsMongo client) {
-        return new Clients(client.getId(), client.getNom(), client.getPrenom(), client.getGenre(), contratAdapter.toDomain(client.getContrats()));
+        return new Clients(client.getId(), client.getNom(), client.getPrenom(), client.getGenre(), client.getContrats());
     }
 
     public List<Clients> toDomain(List<ClientsMongo> clients) {
@@ -25,7 +25,7 @@ public class ClientsMongoAdapter {
     }
 
     public ClientsMongo toMongo(Clients client) {
-        return new ClientsMongo(client.getClientId(), client.getNom(), client.getPrenom(), client.getGenre(), contratAdapter.toMongo(client.getContrats()));
+        return new ClientsMongo(client.getClientId(), client.getNom(), client.getPrenom(), client.getGenre(), client.getContrats());
     }
 
     public List<ClientsMongo> toMongo(List<Clients> clients) {

@@ -3,8 +3,11 @@ package com.imt.projet.Banque.interfaces.database;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Repository;
+
 import com.imt.projet.Banque.domain.model.Client.Clients;
 
+@Repository
 public interface ClientRepository {
 
     boolean clientExists(UUID clientId);

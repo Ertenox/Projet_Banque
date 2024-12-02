@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.imt.projet.Banque.domain.Contrats.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +16,7 @@ public class Clients {
     private String nom;
     private String prenom;
     private String genre ;
-    private List<Contrat> contrats;
+    private List<UUID> contrats;
 
     public Clients(String nom, String prenom, String genre) {
         this.ClientId = UUID.randomUUID();
@@ -27,12 +26,12 @@ public class Clients {
         this.contrats = new ArrayList<>();
     }
 
-    public void addContrat(Contrat contrat) {
-        contrats.add(contrat);
+    public void addContrat(UUID contratId) {
+        contrats.add(contratId);
     }
 
-    public void removeContrat(Contrat contrat) {
-        contrats.remove(contrat);
+    public void removeContrat(UUID contratId) {
+        contrats.remove(contratId);
     }
 
 }

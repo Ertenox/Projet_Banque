@@ -20,6 +20,6 @@ public class ClientsMongo {
     private String nom;
     private String prenom;
     private String genre;
-    private List<ContratMongo> contrats; 
+    private List<UUID> contrats; 
 
 }

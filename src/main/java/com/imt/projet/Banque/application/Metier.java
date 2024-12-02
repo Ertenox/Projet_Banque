@@ -41,7 +41,8 @@ public class Metier {
     
         List<ContratEssential> contratEssentials = new ArrayList<>();
         if (client.getContrats() != null) {
-            for (Contrat contrat : client.getContrats()) {
+            for (UUID contratID : client.getContrats()) {
+                Contrat contrat = getContratByUUID(contratID);
                 ContratEssential contratEssential = new ContratEssential();
                 contratEssential.setId(contrat.getContratId());
                 contratEssential.setType(contrat.getType());
@@ -85,8 +86,8 @@ public class Metier {
             throw new Exception("Client does not exist");
         }
         Clients client = clientRepository.getClientByUUID(clientId);
-        for (Contrat contrat : client.getContrats()){
-            contratRepository.deleteContrat(contrat.getContratId());
+        for (UUID contrat : client.getContrats()){
+            contratRepository.deleteContrat(contrat);
         }
         clientRepository.deleteClient(clientId);
 
@@ -165,7 +166,7 @@ public class Metier {
         Clients client = getClientByUUID(clientId);
         Contrat contrat = ContratFactory.creerContrat(type, clientId, balance);
         contratRepository.saveContrat(contrat);
-        client.addContrat(contrat);
+        client.addContrat(contrat.getContratId());
         clientRepository.saveClient(client);
     }
 
@@ -173,7 +174,11 @@ public class Metier {
         if (!contratRepository.contratExists(contratId)) {
             throw new Exception("Contrat does not exist");
         }
+        Clients client = clientRepository.getClientByUUID(getContratByUUID(contratId).getClientId());
+        client.removeContrat(contratId);
         contratRepository.deleteContrat(contratId);
+        clientRepository.saveClient(client);
+
     }
 
     public void patchContrat(UUID contratId, Map<String, String> patchData) throws Exception {
