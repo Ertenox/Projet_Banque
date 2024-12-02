@@ -187,5 +187,12 @@ public class Metier {
         contratRepository.saveContrat(contrat);
     }
 
-
+    public void applyInterest(){
+        for (Contrat contrat : contratRepository.getAllContrats()) {
+            if (contrat instanceof CompteEpargne){
+                ((CompteEpargne)contrat).applyInterset();
+                contratRepository.saveContrat(contrat);
+            }
+        }
+    }
 }
